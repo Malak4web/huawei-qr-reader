@@ -1,0 +1,77 @@
+<template>
+  <!-- Only one root node is allowed in template. -->
+  <div class="container">
+    <text class="title">
+      Hello it's QR Reader
+    </text>
+
+    <a class="btn" onclick="qrRead">
+      Read
+    </a>
+  </div>
+</template>
+
+<style>
+  .container {
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  .btn {
+    background-color: #0000cd;
+    padding: 10px 30px;
+    color: #fff;
+    border-radius: 5px;
+  }
+  .title {
+    font-size: 60px;
+    text-align: center;
+  }
+</style>
+
+<script>
+  var barcode = require("@system.barcode");
+  var prompt = require("@system.prompt")
+  var webview = require("@system.webview")
+  module.exports = {
+
+    data: {
+      title: 'World'
+    },
+
+    onInit() {
+      this.$page.setTitleBar({
+        text: 'menu',
+        textColor: '#ffffff',
+        backgroundColor: '#007DFF',
+        backgroundOpacity: 0.5,
+        menu: true
+      })
+    },
+    qrRead() {
+      barcode.scan({
+        success: function (data) {
+          prompt.showToast({
+            message: " Qr Readed Value is: " + data.result,
+            duration: "100000",
+            image: "/Common/logo.png",
+            gravity: 'center'
+          })
+          webview.loadUrl({
+            url: data.result
+          })
+          console.log("handling success: " + data.result);
+        },
+        fail: function (data, code) {
+          prompt.showToast({
+            message: " Error " + code,
+            duration: "100000",
+            image: "/Common/logo.png",
+            gravity: 'center'
+          })
+          console.log("handling fail, code=" + code);
+        }
+      })
+    }
+  }
+</script>
